@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Xpand Realty | Property ROI Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:      #0a1628;
+    --navy-mid:  #0f2040;
+    --blue:      #1a4fd6;
+    --blue-bright:#2563eb;
+    --blue-light:#3b82f6;
+    --sky:       #60a5fa;
+    --ice:       #dbeafe;
+    --ice-soft:  #eff6ff;
+    --white:     #ffffff;
+    --slate:     #64748b;
+    --slate-lt:  #94a3b8;
+    --border:    #cbd5e1;
+    --green:     #10b981;
+    --red:       #ef4444;
+    --amber:     #f59e0b;
+    --radius:    10px;
+    --shadow-sm: 0 1px 3px rgba(10,22,40,0.08);
+    --shadow-md: 0 4px 16px rgba(10,22,40,0.12);
+    --shadow-lg: 0 8px 32px rgba(10,22,40,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ice-soft);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BANNER ── */
+  .top-banner {
+    background: var(--navy);
+    color: var(--sky);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .top-banner a {
+    color: var(--white);
+    text-decoration: none;
+    background: var(--blue);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background .2s;
+  }
+  .top-banner a:hover { background: var(--blue-light); }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #0d3575 100%);
+    padding: 36px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content:'';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(37,99,235,.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header::after {
+    content:'';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(96,165,250,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: var(--blue);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(37,99,235,.5);
+  }
+  .logo-icon svg { width: 26px; height: 26px; fill: white; }
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: .06em;
+    line-height: 1;
+  }
+  .logo-text span { color: var(--sky); }
+  .logo-sub {
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--slate-lt);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .03em;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  header p.sub {
+    color: var(--sky);
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: .02em;
+    position: relative;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(37,99,235,.25);
+    border: 1px solid rgba(96,165,250,.3);
+    color: var(--sky);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .icon { font-size: 18px; }
+  .card-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .card-body {
+    padding: 22px 20px;
+  }
+
+  /* ── FORM GRID ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .tip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px; height: 14px;
+    background: var(--blue-light);
+    color: white;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: help;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .tip:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    max-width: 220px;
+    white-space: normal;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .input-wrap {
+    position: relative;
+  }
+  .input-prefix, .input-suffix {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slate);
+    pointer-events: none;
+  }
+  .input-prefix { left: 11px; }
+  .input-suffix { right: 11px; }
+  input[type=number], select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--navy);
+    background: var(--ice-soft);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    -moz-appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input[type=number]:focus, select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    background: var(--white);
+  }
+  .has-prefix input { padding-left: 26px; }
+  .has-suffix input { padding-right: 28px; }
+
+  /* ── RANGE SLIDER ── */
+  .slider-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slider-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--blue) 0%, var(--blue) var(--pct, 40%), var(--border) var(--pct, 40%), var(--border) 100%);
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.2);
+    cursor: pointer;
+    transition: box-shadow .2s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 5px rgba(37,99,235,.25);
+  }
+
+  /* ── ADVANCED TOGGLE ── */
+  .advanced-toggle {
+    width: 100%;
+    background: none;
+    border: 1.5px dashed var(--border);
+    border-radius: 7px;
+    padding: 10px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    transition: border-color .2s, color .2s;
+  }
+  .advanced-toggle:hover {
+    border-color: var(--blue-light);
+    color: var(--blue);
+  }
+  .advanced-toggle .arrow { transition: transform .3s; font-size: 10px; }
+  .advanced-toggle.open .arrow { transform: rotate(180deg); }
+  .advanced-body {
+    display: none;
+    padding-top: 20px;
+  }
+  .advanced-body.show { display: block; }
+  .adv-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 12px;
+    margin-top: 16px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--ice);
+  }
+  .adv-section-label:first-child { margin-top: 0; }
+
+  /* ── CTA BUTTON ── */
+  .cta-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-bright) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(37,99,235,.4);
+    transition: transform .15s, box-shadow .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(37,99,235,.5);
+  }
+  .cta-btn:active { transform: translateY(0); }
+
+  /* ── RESULTS ── */
+  #results { display: none; }
+  #results.show { display: block; }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content:'';
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 70px; height: 70px;
+    background: rgba(96,165,250,.08);
+    border-radius: 50%;
+  }
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--slate-lt);
+    margin-bottom: 6px;
+  }
+  .stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-val.pos { color: #34d399; }
+  .stat-val.neg { color: #f87171; }
+  .stat-val.sky { color: var(--sky); }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 640px;
+  }
+  thead tr {
+    background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+  }
+  thead th {
+    padding: 11px 12px;
+    text-align: right;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--sky);
+    white-space: nowrap;
+  }
+  thead th:first-child { text-align: center; }
+  tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background .15s;
+  }
+  tbody tr:hover { background: var(--ice-soft); }
+  tbody tr:last-child { border-bottom: none; font-weight: 600; background: var(--ice); }
+  tbody td {
+    padding: 10px 12px;
+    text-align: right;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  tbody td:first-child {
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue);
+  }
+  .pos-cf { color: var(--green); font-weight: 600; }
+  .neg-cf { color: var(--red); font-weight: 600; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    font-size: 11.5px;
+    color: var(--slate);
+    line-height: 1.6;
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    color: var(--slate-lt);
+    text-align: center;
+    padding: 24px;
+    font-size: 12.5px;
+    line-height: 1.8;
+    letter-spacing: .02em;
+  }
+  footer a { color: var(--sky); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .brand {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .08em;
+    margin-bottom: 6px;
+  }
+  footer .brand span { color: var(--sky); }
+
+  /* ── AGENT CARD ── */
+  .agent-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .agent-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--sky) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(37,99,235,.3);
+  }
+  .agent-info { flex: 1; }
+  .agent-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .03em;
+  }
+  .agent-title {
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 500;
+  }
+  .agent-cta {
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+    padding: 9px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .agent-cta:hover { background: var(--blue-light); }
+
+  @media (max-width: 540px) {
+    .agent-card { flex-wrap: wrap; }
+    .agent-cta { width: 100%; justify-content: center; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- SWITCH BANNER -->
+<div style="background:#1c1c1e; color:#aaa; text-align:center; padding:9px 20px; font-size:12.5px; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;">
+  ⭐ Also need a property management ROI analysis?
+  <a href="fivestar-roi-calculator.html" style="color:#ffd055; text-decoration:none; background:rgba(245,168,0,.18); border:1px solid rgba(245,168,0,.35); padding:4px 14px; border-radius:20px; font-weight:600; font-size:12px; white-space:nowrap;">Switch to Five Star Calculator →</a>
+</div>
+
+<!-- TOP BANNER -->
+<div class="top-banner">
+  📅 Ready to talk numbers in real life?
+  <a href="https://calendly.com" target="_blank">Book a Free 30-Min Call →</a>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">XPAND<span>REALTY</span></div>
+      <div class="logo-sub">Investment Property Experts</div>
+    </div>
+  </div>
+  <div class="badge">SFR ROI Calculator</div>
+  <h1>Run the Numbers Before You Run the Deal</h1>
+  <p class="sub">Single-family residential investment analysis · Powered by Xpand Realty</p>
+</header>
+
+<main>
+
+  <!-- AGENT CARD -->
+  <div class="agent-card">
+    <div class="agent-avatar">XR</div>
+    <div class="agent-info">
+      <div class="agent-name">Xpand Realty</div>
+      <div class="agent-title">Investment Property Specialists · Your Market · Your Returns</div>
+    </div>
+    <a class="agent-cta" href="tel:7022891669">📞 Schedule a Call</a>
+  </div>
+
+  <!-- PROPERTY DETAILS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">🏡</span>
+      <h2>Property Details</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Purchase Price <span class="tip" data-tip="The agreed-upon sale price of the investment property.">?</span></label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">$</span>
+            <input type="number" id="purchase_price" value="350000" min="0" step="1000" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Down Payment %</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="down_pct" value="20" min="0" max="100" step=".5" />
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Interest Rate</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="interest_rate" value="7.0" min="0" max="30" step=".125" />
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Loan Term</label>
+          <select id="loan_term">
+            <option value="30">30 Years</option>
+            <option value="20">20 Years</option>
+            <option value="15">15 Years</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Annual Appreciation</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="appreciation" value="3.5" min="0" max="20" step=".25" />
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Monthly Rent <span class="tip" data-tip="Expected monthly gross rental income at full occupancy.">?</span></label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">$</span>
+            <input type="number" id="monthly_rent" value="2200" min="0" step="50" />
+          </div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Vacancy Rate: <span id="vac_label" style="color:var(--blue)">4%</span></label>
+          <div class="slider-wrap">
+            <input type="range" id="vacancy_rate" min="0" max="20" value="4" step="1" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">💸</span>
+      <h2>Expenses &amp; Assumptions</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Mgmt Fee <span class="tip" data-tip="Property management fee as % of gross rent collected.">?</span></label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="mgmt_fee" value="8" min="0" max="20" step=".5" />
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Monthly Insurance</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">$</span>
+            <input type="number" id="insurance" value="120" min="0" step="10" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Monthly Maintenance</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">$</span>
+            <input type="number" id="maintenance" value="100" min="0" step="10" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Monthly HOA</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">$</span>
+            <input type="number" id="hoa" value="0" min="0" step="10" />
+          </div>
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1; border-top: 1px solid var(--ice); padding-top: 16px; margin-top: 4px;">
+          <label style="color:var(--blue);">🏛️ Nevada Property Tax <span class="tip" data-tip="Nevada's effective property tax rate is ~0.55% of assessed value. Assessed value = 35% of taxable value. This field lets you enter the annual dollar amount directly. Pre-filled based on purchase price × 0.55%.">?</span></label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px;">
+            <div>
+              <div style="font-size:11px; color:var(--slate); font-weight:600; letter-spacing:.04em; text-transform:uppercase; margin-bottom:6px;">Annual Amount</div>
+              <div class="input-wrap has-prefix">
+                <span class="input-prefix">$</span>
+                <input type="number" id="nv_prop_tax" value="1925" min="0" step="50" />
+              </div>
+            </div>
+            <div style="background:var(--ice-soft); border:1px solid var(--ice); border-radius:7px; padding:10px 12px; font-size:12px; color:var(--slate); line-height:1.6;">
+              <strong style="color:var(--navy);">NV Tax Info</strong><br/>
+              Rate: ~0.55% of purchase price<br/>
+              <span id="nv_tax_hint" style="color:var(--blue); font-weight:600;"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">⚙️</span>
+      <h2>Advanced Settings</h2>
+    </div>
+    <div class="card-body">
+      <button class="advanced-toggle" id="adv_toggle">
+        <span>Show Advanced Options</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="advanced-body" id="adv_body">
+
+        <div class="adv-section-label">🧾 Closing Costs</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Buyer Closing Costs %</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="closing_costs" value="2.5" min="0" max="10" step=".25" />
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Loan Origination %</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="loan_origination" value="1.0" min="0" max="5" step=".25" />
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="adv-section-label">📈 Tax &amp; Growth</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Inflation Rate</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="inflation" value="2.5" min="0" max="15" step=".25" />
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Your Tax Bracket</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="tax_bracket" value="24" min="0" max="60" step="1" />
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Repair Allowance %</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="repair_allowance" value="1.0" min="0" max="10" step=".25" />
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Depreciation Basis $</label>
+            <div class="input-wrap has-prefix">
+              <span class="input-prefix">$</span>
+              <input type="number" id="dep_basis" value="280000" min="0" step="1000" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="cta-btn" id="analyze_btn">
+    $ Analyze This Deal
+  </button>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="card" style="margin-top:20px">
+      <div class="card-header">
+        <span class="icon">📊</span>
+        <h2>Deal Analysis</h2>
+      </div>
+      <div class="card-body" style="padding-bottom:0">
+        <div class="summary-grid" id="summary_grid"></div>
+        <div class="table-wrap">
+          <table id="result_table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Prop Value</th>
+                <th>Equity</th>
+                <th>Gross Income</th>
+                <th>Total Expenses</th>
+                <th>Net Cash Flow</th>
+                <th>After-Tax CF</th>
+                <th>Cumulative CF</th>
+              </tr>
+            </thead>
+            <tbody id="result_body"></tbody>
+          </table>
+        </div>
+        <div class="disclaimer">
+          This calculator is for informational purposes only and does not constitute financial, tax, or legal advice.<br/>
+          Consult a qualified advisor before making investment decisions. &nbsp;|&nbsp;
+          <strong>Xpand Realty</strong> · Investment Property Specialists
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="brand">XPAND<span>REALTY</span></div>
+  Investment Property Specialists<br/>
+  <a href="tel:7022891669">📞 (702) 289-1669</a>
+  <div style="margin-top:14px; padding-top:14px; border-top:1px solid #1e2d45; font-size:12px; color:#64748b;">
+    Need property management analysis? &nbsp;
+    <a href="fivestar-roi-calculator.html" style="color:#ffd055; background:rgba(245,168,0,.1); border:1px solid rgba(245,168,0,.2); padding:4px 14px; border-radius:20px; font-weight:600; text-decoration:none;">Switch to Five Star Calculator →</a>
+  </div>
+</footer>
+
+<script>
+// ── SLIDER ──
+const vacSlider = document.getElementById('vacancy_rate');
+const vacLabel  = document.getElementById('vac_label');
+function updateSlider(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+}
+vacSlider.addEventListener('input', () => {
+  vacLabel.textContent = vacSlider.value + '%';
+  updateSlider(vacSlider);
+});
+updateSlider(vacSlider);
+
+// ── AUTO-FILL NV TAX from purchase price ──
+function updateNvTax() {
+  const price = parseFloat(document.getElementById('purchase_price').value) || 0;
+  const suggested = Math.round(price * 0.0055 / 50) * 50;
+  document.getElementById('nv_prop_tax').value = suggested;
+  document.getElementById('nv_tax_hint').textContent = suggested ? `Est. $${suggested.toLocaleString()}/yr` : '';
+}
+document.getElementById('purchase_price').addEventListener('input', updateNvTax);
+updateNvTax();
+
+// ── ADVANCED TOGGLE ──
+document.getElementById('adv_toggle').addEventListener('click', function() {
+  this.classList.toggle('open');
+  const body = document.getElementById('adv_body');
+  body.classList.toggle('show');
+  this.querySelector('span:first-child').textContent =
+    body.classList.contains('show') ? 'Hide Advanced Options' : 'Show Advanced Options';
+});
+
+// ── HELPERS ──
+const fmt  = (n, d=0) => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', maximumFractionDigits:d}).format(n);
+const fmtp = (n, d=1) => n.toFixed(d) + '%';
+const v    = id => parseFloat(document.getElementById(id).value) || 0;
+
+// ── MORTGAGE ──
+function monthlyPayment(principal, annualRate, years) {
+  if (annualRate === 0) return principal / (years * 12);
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  return principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+}
+
+// ── AMORTIZATION: remaining balance after k payments ──
+function remainingBalance(principal, annualRate, years, k) {
+  if (annualRate === 0) return principal - (principal / (years*12)) * k;
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  return principal * (Math.pow(1+r,n) - Math.pow(1+r,k)) / (Math.pow(1+r,n)-1);
+}
+
+// ── MAIN CALC ──
+document.getElementById('analyze_btn').addEventListener('click', calculate);
+
+function calculate() {
+  const price        = v('purchase_price');
+  const downPct      = v('down_pct') / 100;
+  const rate         = v('interest_rate');
+  const term         = parseInt(document.getElementById('loan_term').value);
+  const appreciation = v('appreciation') / 100;
+  const monthlyRent  = v('monthly_rent');
+  const vacancyRate  = v('vacancy_rate') / 100;
+  const mgmtFeePct   = v('mgmt_fee') / 100;
+  const insurance    = v('insurance');
+  const maintenance  = v('maintenance');
+  const hoa          = v('hoa');
+  const closingPct   = v('closing_costs') / 100;
+  const originPct    = v('loan_origination') / 100;
+  const inflation    = v('inflation') / 100;
+  const taxBracket   = v('tax_bracket') / 100;
+  const repairPct    = v('repair_allowance') / 100;
+  const depBasis     = v('dep_basis');
+  const nvPropTax    = v('nv_prop_tax');
+
+  const downPayment  = price * downPct;
+  const loanAmt      = price - downPayment;
+  const closingCosts = price * closingPct + loanAmt * originPct;
+  const totalCashIn  = downPayment + closingCosts;
+  const monthlyMortgage = monthlyPayment(loanAmt, rate, term);
+  const annualMortgage  = monthlyMortgage * 12;
+  const annualDeprec    = depBasis / 27.5; // IRS residential depreciation (27.5 yr straight-line)
+
+  const YEARS = 10;
+  let cumCF = 0;
+  let rows = [];
+
+  for (let yr = 1; yr <= YEARS; yr++) {
+    const inf = Math.pow(1 + inflation, yr - 1);
+
+    const propValue  = price * Math.pow(1 + appreciation, yr);
+    const balanceEnd = remainingBalance(loanAmt, rate, term, yr * 12);
+    const equity     = propValue - balanceEnd;
+
+    // ── INCOME ──
+    const effRent = monthlyRent * 12 * (1 - vacancyRate) * inf;
+
+    // ── OPERATING EXPENSES (no mortgage — for NOI / cap rate) ──
+    const propTax   = nvPropTax   * inf;
+    const insurAnn  = insurance   * 12 * inf;
+    const maintAnn  = maintenance * 12 * inf;
+    const hoaAnn    = hoa         * 12 * inf;
+    const mgmtAnn   = effRent     * mgmtFeePct;           // % of collected rent
+    const repairAnn = price       * repairPct * inf;      // inflates over time
+    const totalOpEx = propTax + insurAnn + maintAnn + hoaAnn + mgmtAnn + repairAnn;
+
+    // ── NOI (used for cap rate) ──
+    const noi = effRent - totalOpEx;
+
+    // ── NET CASH FLOW (after debt service) ──
+    const totalExp = totalOpEx + annualMortgage;
+    const netCF    = effRent - totalExp;                  // pre-tax cash flow
+
+    // ── AFTER-TAX CASH FLOW ──
+    // Taxable rental income = NOI - depreciation (mortgage interest also deductible
+    // but we use NOI as a proxy since interest split changes yearly; conservative approach)
+    const taxableIncome = noi - annualDeprec;
+    let taxImpact = 0;
+    if (taxableIncome > 0) {
+      taxImpact = -(taxableIncome * taxBracket);  // owe taxes → reduces CF
+    } else {
+      taxImpact = Math.abs(taxableIncome) * taxBracket;   // paper loss → tax shield
+    }
+    const afterTaxCF = netCF + taxImpact;
+
+    cumCF += afterTaxCF;
+
+    rows.push({ yr, propValue, equity, effRent, totalOpEx, totalExp, noi, netCF, afterTaxCF, cumCF });
+  }
+
+  // ── SUMMARY STATS ──
+  const yr1  = rows[0];
+  const yr10 = rows[YEARS - 1];
+  // Cap rate = Year 1 NOI / purchase price (standard definition, no debt service)
+  const capRate    = (yr1.noi / price) * 100;
+  // Cash-on-cash = Year 1 after-tax CF / total cash invested
+  const cashOnCash = (yr1.afterTaxCF / totalCashIn) * 100;
+  // Gross yield = annual gross rent / purchase price
+  const grossYield = (monthlyRent * 12) / price * 100;
+  // Total ROI = (10yr cumulative after-tax CF + equity gain over down payment) / total cash in
+  const equityGain = yr10.equity - downPayment;
+  const totalROI   = ((yr10.cumCF + equityGain) / totalCashIn) * 100;
+
+  const sumEl = document.getElementById('summary_grid');
+  sumEl.innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Cash In</div><div class="stat-val sky">${fmt(totalCashIn)}</div></div>
+    <div class="stat-card"><div class="stat-label">Gross Yield</div><div class="stat-val sky">${fmtp(grossYield)}</div></div>
+    <div class="stat-card"><div class="stat-label">Cap Rate (Yr 1)</div><div class="stat-val sky">${fmtp(capRate)}</div></div>
+    <div class="stat-card"><div class="stat-label">Yr 1 Cash-on-Cash</div><div class="stat-val ${cashOnCash>=0?'pos':'neg'}">${fmtp(cashOnCash)}</div></div>
+    <div class="stat-card"><div class="stat-label">Yr 10 Equity</div><div class="stat-val pos">${fmt(yr10.equity)}</div></div>
+    <div class="stat-card"><div class="stat-label">10-Yr Total ROI</div><div class="stat-val ${totalROI>=0?'pos':'neg'}">${fmtp(totalROI)}</div></div>
+  `;
+
+  // ── TABLE ROWS ──
+  const tbody = document.getElementById('result_body');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>Yr ${r.yr}</td>
+      <td>${fmt(r.propValue)}</td>
+      <td>${fmt(r.equity)}</td>
+      <td>${fmt(r.effRent)}</td>
+      <td>${fmt(r.totalExp)}</td>
+      <td class="${r.netCF>=0?'pos-cf':'neg-cf'}">${fmt(r.netCF)}</td>
+      <td class="${r.afterTaxCF>=0?'pos-cf':'neg-cf'}">${fmt(r.afterTaxCF)}</td>
+      <td class="${r.cumCF>=0?'pos-cf':'neg-cf'}">${fmt(r.cumCF)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
